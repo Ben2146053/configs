@@ -18,6 +18,11 @@ sudo pacman -S --noconfirm $PACKAGES
 # </PACMAN>
 
 
+# <FIREFOX>
+sudo pacman -S --noconfirm firefox
+# </FIREFOX>
+
+
 # <DOCKER>
 sudo pacman -S --noconfirm docker
 sudo systemctl start docker.service
@@ -51,6 +56,7 @@ ln -s $CONFIG_PATH/tmux/.tmux.conf ~/.tmux.conf
 
 # <FISH>
 sudo pacman -S --noconfirm fish
+chsh -s /usr/bin/fish
 curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
 fisher install jorgebucaran/nvm.fish
 fisher install PatrickF1/fzf.fish
@@ -71,10 +77,6 @@ reset
 
 # <RUST>
 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
-source $HOME/.cargo/env
-echo 'source $HOME/.cargo/env' >> ~/.bashrc
-echo 'source $HOME/.cargo/env' >> ~/.zshrc
-echo 'source $HOME/.cargo/env' >> ~/.config/fish/config.fish
 cd ~/Documents/
 git clone https://github.com/rust-lang/rust.git
 reset
@@ -112,7 +114,7 @@ chmod 700 get_helm.sh
 
 # <MONOSPACE>
 FONT_DIR="$HOME/Downloads"
-FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Monospace.tar.xz"
+FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Monaspace.tar.xz"
 FONT_FILE="$FONT_DIR/Monospace.tar.xz"
 EXTRACT_DIR="$FONT_DIR/Monospace"
 curl -L $FONT_URL -o $FONT_FILE
@@ -148,6 +150,13 @@ tar -xzf $ORYX_FILE -C $ORYX_DIR
 chmod -R +x $ORYX_DIR/keymapp
 rm $ORYX_FILE
 # </MOONLANDER>
+
+
+# <MISC>
+rm -r ~/Videos ~/Pictures ~/Templates ~/Public ~/Desktop
+mkdir Apps
+mv ~/keymapp ~/Apps/
+# </MISC>
 
 
 echo "Installation completed successfully!"
