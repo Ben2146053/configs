@@ -82,7 +82,17 @@ git clone https://github.com/rust-lang/rust.git
 reset
 cargo install exa
 cargo install cargo-tarpaulin
-# </RUST>>
+sudo pacman -S gdb git base-devel cmake
+cd ~/Downloads/
+git clone https://aur.archlinux.org/rr.git
+cd rr
+makepkg -si
+cd ..
+rm -rf rr
+wget -P ~ https://git.io/.gdbinit
+ln -s $CONFIG_PATH/gdb/.gdbinit ~/.gdbinit
+reset
+# </RUST>
 
 
 # <NPM>
