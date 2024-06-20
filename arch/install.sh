@@ -1,126 +1,136 @@
 #!/bin/bash
 
-# Update and install necessary packages
+echo "Please enter the path to your custom configuration directory located in ~home/:"
+read -r USER_INPUT
+echo "Please enter pacman pacakages would like to install "
+read -r PACKAGES_INPUT
+
+
+# <VARIABLES>
+CONFIG_PATH=${USER_INPUT:-~/Documents/configs/}
+PACKAGES=${PACKAGES_INPUT:-"git base-devel vmware-horizon-client"}
+# </VARIABLES>
+
+
+# <PACMAN>
 sudo pacman -Syu
-sudo pacman -S --noconfirm alacritty tmux fish neovim vmware-horizon-client nodejs npm protobuf libusb webkit2gtk gtk3 git minikube kubectl docker
+sudo pacman -S --noconfirm git base-devel $PACKAGES
+# </PACMAN>
 
-# Install yay
-if ! command -v yay &> /dev/null; then
-    echo "yay not found, installing yay..."
-    git clone https://aur.archlinux.org/yay.git
-    cd yay
-    makepkg -si --noconfirm
-    cd ..
-    rm -rf yay
-fi
 
-# Install NvChad
+# <DOCKER>
+sudo pacman -S docker
+sudo systemctl start docker.service
+sudo systemctl enable docker.service
+sudo usermod -aG docker $USER
+# </DOCKER>
+
+
+# <NEOVIM>
+sudo pacman -S neovim
 git clone https://github.com/NvChad/starter ~/.config/nvim
-rm -rf ~/.config/nvim/.git
+rm -rf ~/.config/nvim/
+for item in $CONFIG_PATH/nvim/*; do
+    ln -s $item ~/.config/nvim/$(basename $item)
+done
+# </NEOVIM>
 
-# Create alacritty toml file
-touch ~/.config/alacritty/alacritty.toml
 
-# create tmux config
-touch ~/.tmux.conf
+# <ALACRITTY>
+sudo pacman -S alacritty
+mkdir -p ~/.config/alacritty
+ln -s $CONFIG_PATH/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
+# </ALACRITTY>
 
-# Install Visual Studio Code using yay
-yay -S --noconfirm visual-studio-code-bin
 
-# Install Rust using rustup
+# <TMUX>
+sudo pacman -S tmux
+ln -s $CONFIG_PATH/tmux/.tmux.conf ~/.tmux.conf
+# </TMUX>
+
+
+# <FISH>
+sudo pacman -S fish
+curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+fisher install jorgebucaran/nvm.fish
+fisher install PatrickF1/fzf.fish
+# </FISH>
+
+
+# <VSCODE>
+cd ~/Downloads/
+git clone https://aur.archlinux.org/visual-studio-code-bin.git
+cd visual-studio-code-bin
+makepkg -si
+cd ..
+rm -rf visual-studio-code-bin
+reset
+# </VSCODE>
+
+
+# <RUST>
 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
-
-# Configure the current shell to use Rust
 source $HOME/.cargo/env
-
-# Add Rust configuration to shell startup scripts
 echo 'source $HOME/.cargo/env' >> ~/.bashrc
 echo 'source $HOME/.cargo/env' >> ~/.zshrc
 echo 'source $HOME/.cargo/env' >> ~/.config/fish/config.fish
+cd ~/Documents/
+git clone https://github.com/rust-lang/rust.git
+reset
+cargo install exa
+cargo install cargo-tarpaulin
+# </RUST>>
 
-# Verify Rust installation
-rustc --version
 
-# Install Fisher plugin manager for Fish shell
-curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
-
-# Install Fish plugins using Fisher
-fisher install jorgebucaran/nvm.fish
-fisher install PatrickF1/fzf.fish
-
-# Install buf modules
+# <NPM>
+sudo pacman -S nodejs npm protobuf
 npm i -g @bufbuild/connect-web @bufbuild/connect @bufbuild/buf @bufbuild/protobuf
+# </NPM>
 
-# Install Helm 
-echo "Installing Helm..."
+
+# <MINIKUBE>
+sudo pacman -S kubectl
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+chmod +x minikube
+sudo mv minikube /usr/local/bin/
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
-echo "Helm installed successfully."
+# </MINIKUBE>
 
-# Download and install Nerd Font
+
+# <MONOSPACE>
 FONT_DIR="$HOME/Downloads"
 FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Monaspace.tar.xz"
 FONT_FILE="$FONT_DIR/Monaspace.tar.xz"
-
-echo "Downloading Nerd Font to $FONT_DIR..."
 curl -L $FONT_URL -o $FONT_FILE
+# </MONOSPACE
 
-# Create and write to the udev rules file with the specified content
+
+# <MOONLANDER>
+sudo pacman -S libusb webkit2gtk gtk3
 sudo bash -c 'cat > /etc/udev/rules.d/50-zsa.rules' <<EOF
-# Rules for Oryx web flashing and live training
 KERNEL=="hidraw*", ATTRS{idVendor}=="16c0", MODE="0664", GROUP="plugdev"
 KERNEL=="hidraw*", ATTRS{idVendor}=="3297", MODE="0664", GROUP="plugdev"
-
-# Legacy rules for live training over webusb (Not needed for firmware v21+)
-# Rule for all ZSA keyboards
 SUBSYSTEM=="usb", ATTR{idVendor}=="3297", GROUP="plugdev"
-# Rule for the Moonlander
 SUBSYSTEM=="usb", ATTR{idVendor}=="3297", ATTR{idProduct}=="1969", GROUP="plugdev"
-# Rule for the Ergodox EZ
 SUBSYSTEM=="usb", ATTR{idVendor}=="feed", ATTR{idProduct}=="1307", GROUP="plugdev"
-# Rule for the Planck EZ
 SUBSYSTEM=="usb", ATTR{idVendor}=="feed", ATTR{idProduct}=="6060", GROUP="plugdev"
-
-# Wally Flashing rules for the Ergodox EZ
 ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", ENV{ID_MM_DEVICE_IGNORE}="1"
 ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789A]?", ENV{MTP_NO_PROBE}="1"
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789ABCD]?", MODE:="0666"
 KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", MODE:="0666"
-
-# Keymapp / Wally Flashing rules for the Moonlander and Planck EZ
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE:="0666", SYMLINK+="stm32_dfu"
-# Keymapp Flashing rules for the Voyager
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
 EOF
-
-# Print completion message for udev rules
-echo "Udev rules file created and content added successfully!"
-
-# Download and install Oryx
 ORYX_DIR="$HOME/"
 ORYX_URL="https://oryx.nyc3.cdn.digitaloceanspaces.com/keymapp/keymapp-latest.tar.gz"
 ORYX_FILE="$ORYX_DIR/keymapp-latest.tar.gz"
-
-echo "Downloading Oryx keyboard config to $ORYX_DIR..."
 curl -L $ORYX_URL -o $ORYX_FILE
-
-# Extract Oryx tar.gz file
-echo "Extracting Oryx keyboard config..."
 tar -xzf $ORYX_FILE -C $ORYX_DIR
-
-# Set executable permissions for the extracted files (if needed)
 chmod -R +x $ORYX_DIR/keymapp
-
-# Clean up tar file
 rm $ORYX_FILE
+# </MOONLANDER>
 
-# install exa
-cargo install exa
 
-# install Rust repo
-cd ~/Documents/
-git clone https://github.com/rust-lang/rust.git
-
-# Print completion message
 echo "Installation completed successfully!"
