@@ -46,6 +46,7 @@ ln -s $CONFIG_PATH/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 # <TMUX>
 sudo pacman -S tmux
 ln -s $CONFIG_PATH/tmux/.tmux.conf ~/.tmux.conf
+tmux source ~/.tmux.conf
 # </TMUX>
 
 
@@ -54,6 +55,8 @@ sudo pacman -S fish
 curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
 fisher install jorgebucaran/nvm.fish
 fisher install PatrickF1/fzf.fish
+ln -s $CONFIG_PATH/fish/fish.config ~/.config/fish/config.fish
+source ~/.config/fish/config.fish
 # </FISH>
 
 
