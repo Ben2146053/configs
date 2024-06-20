@@ -1,0 +1,30 @@
+NUM_FILES=$(git diff --cached --name-only | wc -l)
+NUM_ADDITIONS=$(git diff --cached --numstat | awk '{ sum += $1 } END { print sum }')
+NUM_DELETIONS=$(git diff --cached --numstat | awk '{ sum += $2 } END { print sum }')
+GIT_USER=$(git config user.name)
+INITIALS=$(echo $GIT_USER | awk '{ print substr($1, 1, 1) substr($2, 1, 1) }')
+
+SMALL_CHANGE_THRESHOLD=5
+MEDIUM_CHANGE_THRESHOLD=10
+
+# Select Gitmoji based on the level of changes
+if [ "$NUM_FILES" -le "$SMALL_CHANGE_THRESHOLD" ]; then
+  GITMOJI="🔍" # Small change
+  LEVEL="small"
+elif [ "$NUM_FILES" -le "$MEDIUM_CHANGE_THRESHOLD" ]; then
+  GITMOJI="✨" # Medium change
+  LEVEL="medium"
+else
+  GITMOJI="💥" # Large change
+  LEVEL="large"
+fi
+
+# Construct the commit message based on the number of altered files and the level of changes
+if [ "$NUM_FILES" -eq 1 ]; then
+  ALTERED_FILE=$(git diff --cached --name-only)
+  COMMIT_MESSAGE="$GITMOJI $INITIALS: Updated $ALTERED_FILE - a $LEVEL change."
+else
+  COMMIT_MESSAGE="$GITMOJI $INITIALS: $NUM_FILES files with $NUM_ADDITIONS additions and $NUM_DELETIONS deletions - a $LEVEL change."
+fi
+
+echo "$COMMIT_MESSAGE" > $1
