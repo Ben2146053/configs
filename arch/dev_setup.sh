@@ -4,11 +4,17 @@ echo "Please enter the path to your custom configuration directory located in ~h
 read -r USER_INPUT
 echo "Please enter pacman pacakages would like to install "
 read -r PACKAGES_INPUT
+echo "Please enter git username "
+read -r GIT_USER_INPUT
+echo "Please enter git email address "
+read -r GIT_EMAIL_INPUT
 
 
 # <VARIABLES>
 CONFIG_PATH=${USER_INPUT:-~/Documents/configs/}
 PACKAGES=${PACKAGES_INPUT:-"git base-devel vmware-horizon-client"}
+GIT_USER=$GIT_USER_INPUT
+GIT_EMAIL=$GIT_EMAIL_INPUT
 # </VARIABLES>
 
 
@@ -21,6 +27,13 @@ sudo pacman -S --noconfirm $PACKAGES
 # <FIREFOX>
 sudo pacman -S --noconfirm firefox
 # </FIREFOX>
+
+
+# <GIT>
+sudo pacman -S --noconfirm git
+git config --global user.name "$GIT_USER"
+git config --global user.email "$GIT_EMAIL"
+# </GIT>
 
 
 # <DOCKER>
@@ -156,6 +169,7 @@ rm $ORYX_FILE
 rm -r ~/Videos ~/Pictures ~/Templates ~/Public ~/Desktop
 mkdir Apps
 mv ~/keymapp ~/Apps/
+sudo pacman -S --noconfirm base-devel vmware-horizon-client
 # </MISC>
 
 
