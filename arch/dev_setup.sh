@@ -95,7 +95,7 @@ reset
 
 # <NPM>
 sudo pacman -S --noconfirm nodejs npm protobuf
-npm i -g @bufbuild/connect-web @bufbuild/connect @bufbuild/buf @bufbuild/protobuf
+sudo npm i -g @bufbuild/connect-web @bufbuild/connect @bufbuild/buf @bufbuild/protobuf
 # </NPM>
 
 
