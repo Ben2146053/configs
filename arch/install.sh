@@ -101,10 +101,16 @@ chmod 700 get_helm.sh
 
 # <MONOSPACE>
 FONT_DIR="$HOME/Downloads"
-FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Monaspace.tar.xz"
-FONT_FILE="$FONT_DIR/Monaspace.tar.xz"
+FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Monospace.tar.xz"
+FONT_FILE="$FONT_DIR/Monospace.tar.xz"
+EXTRACT_DIR="$FONT_DIR/Monospace"
 curl -L $FONT_URL -o $FONT_FILE
-# </MONOSPACE
+mkdir -p $EXTRACT_DIR
+tar -xvf $FONT_FILE -C $EXTRACT_DIR
+mkdir -p ~/.local/share/fonts
+find $EXTRACT_DIR -name "*.otf" -exec cp {} ~/.local/share/fonts/ \;
+fc-cache -fv
+# </MONOSPACE>
 
 
 # <MOONLANDER>
