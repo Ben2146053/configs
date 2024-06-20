@@ -14,12 +14,12 @@ PACKAGES=${PACKAGES_INPUT:-"git base-devel vmware-horizon-client"}
 
 # <PACMAN>
 sudo pacman -Syu
-sudo pacman -S --noconfirm git base-devel $PACKAGES
+sudo pacman -S --noconfirm $PACKAGES
 # </PACMAN>
 
 
 # <DOCKER>
-sudo pacman -S docker
+sudo pacman -S --noconfirm docker
 sudo systemctl start docker.service
 sudo systemctl enable docker.service
 sudo usermod -aG docker $USER
@@ -27,7 +27,7 @@ sudo usermod -aG docker $USER
 
 
 # <NEOVIM>
-sudo pacman -S neovim
+sudo pacman -S --noconfirm neovim
 git clone https://github.com/NvChad/starter ~/.config/nvim
 rm -rf ~/.config/nvim/
 for item in $CONFIG_PATH/nvim/*; do
@@ -37,26 +37,24 @@ done
 
 
 # <ALACRITTY>
-sudo pacman -S alacritty
+sudo pacman -S --noconfirm alacritty
 mkdir -p ~/.config/alacritty
 ln -s $CONFIG_PATH/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 # </ALACRITTY>
 
 
 # <TMUX>
-sudo pacman -S tmux
+sudo pacman -S --noconfirm tmux
 ln -s $CONFIG_PATH/tmux/.tmux.conf ~/.tmux.conf
-tmux source ~/.tmux.conf
 # </TMUX>
 
 
 # <FISH>
-sudo pacman -S fish
+sudo pacman -S --noconfirm fish
 curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
 fisher install jorgebucaran/nvm.fish
 fisher install PatrickF1/fzf.fish
 ln -s $CONFIG_PATH/fish/fish.config ~/.config/fish/config.fish
-source ~/.config/fish/config.fish
 # </FISH>
 
 
@@ -82,7 +80,7 @@ git clone https://github.com/rust-lang/rust.git
 reset
 cargo install exa
 cargo install cargo-tarpaulin
-sudo pacman -S gdb git base-devel cmake
+sudo pacman -S --noconfirm gdb git base-devel cmake
 cd ~/Downloads/
 git clone https://aur.archlinux.org/rr.git
 cd rr
@@ -96,13 +94,13 @@ reset
 
 
 # <NPM>
-sudo pacman -S nodejs npm protobuf
+sudo pacman -S --noconfirm nodejs npm protobuf
 npm i -g @bufbuild/connect-web @bufbuild/connect @bufbuild/buf @bufbuild/protobuf
 # </NPM>
 
 
 # <MINIKUBE>
-sudo pacman -S kubectl
+sudo pacman -S --noconfirm kubectl
 curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 chmod +x minikube
 sudo mv minikube /usr/local/bin/
@@ -127,7 +125,7 @@ fc-cache -fv
 
 
 # <MOONLANDER>
-sudo pacman -S libusb webkit2gtk gtk3
+sudo pacman -S --noconfirm libusb webkit2gtk gtk3
 sudo bash -c 'cat > /etc/udev/rules.d/50-zsa.rules' <<EOF
 KERNEL=="hidraw*", ATTRS{idVendor}=="16c0", MODE="0664", GROUP="plugdev"
 KERNEL=="hidraw*", ATTRS{idVendor}=="3297", MODE="0664", GROUP="plugdev"
