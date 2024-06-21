@@ -67,8 +67,9 @@ sudo usermod -aG docker $USER
 sudo pacman -S --noconfirm neovim
 git clone https://github.com/NvChad/starter ~/.config/nvim
 rm -rf ~/.config/nvim/
+mkdir ~/.config/nvim/
 for item in $CONFIG_PATH/nvim/*; do
-    ln -s $item ~/.config/nvim/$(basename $item)
+    cp $item ~/.config/nvim/$(basename $item)
 done
 # </NEOVIM>
 
@@ -76,13 +77,13 @@ done
 # <ALACRITTY>
 sudo pacman -S --noconfirm alacritty
 mkdir -p ~/.config/alacritty
-ln -s $CONFIG_PATH/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
+cp $CONFIG_PATH/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 # </ALACRITTY>
 
 
 # <TMUX>
 sudo pacman -S --noconfirm tmux
-ln -s $CONFIG_PATH/tmux/.tmux.conf ~/.tmux.conf
+cp $CONFIG_PATH/tmux/.tmux.conf ~/.tmux.conf
 # </TMUX>
 
 
@@ -92,7 +93,8 @@ chsh -s /usr/bin/fish
 curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
 fisher install jorgebucaran/nvm.fish
 fisher install PatrickF1/fzf.fish
-ln -s $CONFIG_PATH/fish/fish.config ~/.config/fish/config.fish
+rm ~/.config/fish/config.fish
+cp $CONFIG_PATH/fish/fish.config ~/.config/fish/config.fish
 # </FISH>
 
 
@@ -174,7 +176,8 @@ KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", MODE:
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE:="0666", SYMLINK+="stm32_dfu"
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
 EOF
-ORYX_DIR="$HOME/"
+mkdir ~/Apps
+ORYX_DIR="$HOME/APPS"
 ORYX_URL="https://oryx.nyc3.cdn.digitaloceanspaces.com/keymapp/keymapp-latest.tar.gz"
 ORYX_FILE="$ORYX_DIR/keymapp-latest.tar.gz"
 curl -L $ORYX_URL -o $ORYX_FILE
@@ -184,12 +187,36 @@ rm $ORYX_FILE
 # </MOONLANDER>
 
 
-# <MISC>
-rm -r ~/Videos ~/Pictures ~/Templates ~/Public ~/Desktop
-mkdir Apps
-mv ~/keymapp ~/Apps/
-sudo pacman -S --noconfirm base-devel vmware-horizon-client
-# </MISC>
+# <HORIZON_CLIENT>
+cd ~/Downloads/
+git clone https://aur.archlinux.org/libudev0-shim.git
+cd libudev0-shim
+makepkg -si
+cd ..
+rm -rf libudev0-shim
 
+cd ~/Downloads/
+git clone https://aur.archlinux.org/vmware-keymaps.git
+cd vmware-keymaps
+makepkg -si
+cd ..
+rm -rf vmware-keymaps
+
+cd ~/Downloads/
+git clone https://aur.archlinux.org/vmware-horizon-client.git
+cd vmware-horizon-client
+makepkg -si
+cd ..
+rm -rf vmware-horizon-client
+
+#sudo nano /etc/gdm/custom.conf
+#WaylandEnable=false
+
+# </HORIZON_CLIENT>
+
+
+# <MISC>
+rm -r ~/Videos ~/Pictures ~/Templates ~/Public ~/Desktop ~/icons.png
+# </MISC>
 
 echo "Installation completed successfully!"
