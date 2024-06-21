@@ -72,6 +72,7 @@ CONFIG_PATH=~/.config/nvim/
 for item in $CONFIG_PATH*; do
     cp -r $item ~/.config/nvim/$(basename $item)
 done
+reset
 # </NEOVIM>
 
 
@@ -79,23 +80,34 @@ done
 sudo pacman -S --noconfirm alacritty
 mkdir -p ~/.config/alacritty
 cp $CONFIG_PATH/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
+reset
 # </ALACRITTY>
 
 
 # <TMUX>
 sudo pacman -S --noconfirm tmux
 cp $CONFIG_PATH/tmux/.tmux.conf ~/.tmux.conf
+reset
 # </TMUX>
 
 
 # <FISH>
 sudo pacman -S --noconfirm fish
-chsh -s /usr/bin/fish
-curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
-fisher install jorgebucaran/nvm.fish
-fisher install PatrickF1/fzf.fish
-rm ~/.config/fish/config.fish
-cp $CONFIG_PATH/fish/fish.config ~/.config/fish/config.fish
+echo "Changing shell to Fish"
+chsh -s $(which fish) || { echo "Failed to change shell. Ensure you enter the correct password."; exit 1; }
+fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher"
+fish -c "fisher install jorgebucaran/nvm.fish"
+fish -c "fisher install PatrickF1/fzf.fish"
+rm -f ~/.config/fish/config.fish
+mkdir -p ~/.config/fish/
+if [ -f "$CONFIG_PATH/fish/config.fish" ]; then
+    cp $CONFIG_PATH/fish/config.fish ~/.config/fish/config.fish
+    echo "Configuration file copied successfully."
+else
+    echo "Configuration file not found at $CONFIG_PATH/fish/config.fish"
+    exit 1
+fi
+reset
 # </FISH>
 
 
@@ -144,6 +156,7 @@ sudo mv minikube /usr/local/bin/
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
+reset
 # </MINIKUBE>
 
 
@@ -158,6 +171,7 @@ tar -xvf $FONT_FILE -C $EXTRACT_DIR
 mkdir -p ~/.local/share/fonts
 find $EXTRACT_DIR -name "*.otf" -exec cp {} ~/.local/share/fonts/ \;
 fc-cache -fv
+reset
 # </MONOSPACE>
 
 
@@ -178,13 +192,14 @@ SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", MODE:="066
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="3297", MODE:="0666", SYMLINK+="ignition_dfu"
 EOF
 mkdir ~/Apps
-ORYX_DIR="$HOME/APPS"
+ORYX_DIR="$HOME/Apps"
 ORYX_URL="https://oryx.nyc3.cdn.digitaloceanspaces.com/keymapp/keymapp-latest.tar.gz"
 ORYX_FILE="$ORYX_DIR/keymapp-latest.tar.gz"
 curl -L $ORYX_URL -o $ORYX_FILE
 tar -xzf $ORYX_FILE -C $ORYX_DIR
 chmod -R +x $ORYX_DIR/keymapp
 rm $ORYX_FILE
+reset
 # </MOONLANDER>
 
 
@@ -209,15 +224,18 @@ cd vmware-horizon-client
 makepkg -si
 cd ..
 rm -rf vmware-horizon-client
-
+reset
 # sudo nano /etc/gdm/custom.conf
 # WaylandEnable=false
 # systemctl restart gdm
+
 # </HORIZON_CLIENT>
 
 
 # <MISC>
 rm -r ~/Videos ~/Pictures ~/Templates ~/Public ~/Desktop ~/icons.png
+
+# tmux source ~/.tmux.conf
 # </MISC>
 
 echo "Installation completed successfully!"
