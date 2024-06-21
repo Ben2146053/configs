@@ -66,10 +66,11 @@ sudo usermod -aG docker $USER
 # <NEOVIM>
 sudo pacman -S --noconfirm neovim
 git clone https://github.com/NvChad/starter ~/.config/nvim
-rm -rf ~/.config/nvim/
-mkdir ~/.config/nvim/
-for item in $CONFIG_PATH/nvim/*; do
-    cp $item ~/.config/nvim/$(basename $item)
+rm -rf ~/.config/nvim/*
+mkdir -p ~/.config/nvim/
+CONFIG_PATH=~/.config/nvim/
+for item in $CONFIG_PATH*; do
+    cp -r $item ~/.config/nvim/$(basename $item)
 done
 # </NEOVIM>
 
@@ -209,9 +210,9 @@ makepkg -si
 cd ..
 rm -rf vmware-horizon-client
 
-#sudo nano /etc/gdm/custom.conf
-#WaylandEnable=false
-
+# sudo nano /etc/gdm/custom.conf
+# WaylandEnable=false
+# systemctl restart gdm
 # </HORIZON_CLIENT>
 
 
