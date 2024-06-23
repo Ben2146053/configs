@@ -234,6 +234,13 @@ reset
 
 # <MISC>
 rm -r ~/Videos ~/Pictures ~/Templates ~/Public ~/Desktop ~/icons.png
+sudo hostnamectl set-hostname archy_host
+echo -e "127.0.0.1\tlocalhost\n::1\tlocalhost\n127.0.1.1\archy_host.localdomain archy_host" | sudo tee -a /etc/hosts
+sudo systemctl enable systemd-networkd
+sudo systemctl start systemd-networkd
+sudo systemctl enable systemd-resolved
+sudo systemctl start systemd-resolved
+
 
 # tmux source ~/.tmux.conf
 # </MISC>
