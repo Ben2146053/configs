@@ -99,6 +99,11 @@ chsh -s $(which fish) || { echo "Failed to change shell. Ensure you enter the co
 fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher"
 fish -c "fisher install jorgebucaran/nvm.fish"
 fish -c "fisher install PatrickF1/fzf.fish"
+fisher install jorgebucaran/fish-bax
+fisher install jorgebucaran/fish-nvm
+fisher install jorgebucaran/fish-spin
+fisher install jethrokuan/z
+
 rm -f ~/.config/fish/config.fish
 mkdir -p ~/.config/fish/
 if [ -f "$CONFIG_PATH/fish/config.fish" ]; then
