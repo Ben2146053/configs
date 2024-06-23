@@ -87,6 +87,7 @@ reset
 # <TMUX>
 sudo pacman -S --noconfirm tmux
 cp $CONFIG_PATH/tmux/.tmux.conf ~/.tmux.conf
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 reset
 # </TMUX>
 

@@ -13,7 +13,7 @@ tmux rename-window -t 0 'TMUX'
 tmux send-keys -t "$SESSION":0.0 "htop" C-m
 tmux split-window -t "$SESSION":0 -v -c "${COMPASS}"
 tmux send-keys -t "$SESSION":0.1 "ls" C-m
-tmux resize-pane -t "$SESSION":0.0 -y 15%
+tmux resize-pane -t "$SESSION":0.0 -y 12%
 tmux split-window -t "$SESSION":0.1 -h -c "${COMPASS_SERVICES}"
 tmux send-keys -t "$SESSION":0.2 "ls" C-m
 
