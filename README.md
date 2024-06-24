@@ -1,2 +1,1 @@
-# configs
-My configuration files
+Developer Configurations
