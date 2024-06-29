@@ -166,6 +166,11 @@ reset
 # </MINIKUBE>
 
 
+# <K9S>
+sudo pacman -S --noconfirm k9s
+# </K9S>
+
+
 # <MONOSPACE>
 FONT_DIR="$HOME/Downloads"
 FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Monaspace.tar.xz"
